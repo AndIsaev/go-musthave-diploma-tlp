@@ -12,7 +12,7 @@ type Config struct {
 func NewConfig() *Config {
 	cfg := &Config{}
 
-	flag.StringVar(&cfg.Address, "a", "localhost:8080", "address for your server")
+	flag.StringVar(&cfg.Address, "a", "localhost:8000", "address for your server")
 
 	flag.Parse()
 
