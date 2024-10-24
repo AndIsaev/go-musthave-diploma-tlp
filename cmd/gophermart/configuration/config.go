@@ -15,7 +15,8 @@ func NewConfig() *Config {
 	cfg := &Config{}
 
 	flag.StringVar(&cfg.Address, "a", "localhost:8000", "address for your server")
-	flag.StringVar(&cfg.DB, "d", "", "DATABASE_URI")
+	flag.StringVar(&cfg.DB, "d", "", "connection for postgres")
+	flag.StringVar(&cfg.Accural, "r", "localhost:9000", "accural system")
 
 	flag.Parse()
 
@@ -28,7 +29,7 @@ func NewConfig() *Config {
 	}
 
 	if envAccural := os.Getenv("ACCRUAL_SYSTEM_ADDRESS"); envAccural != "" {
-		cfg.DB = envAccural
+		cfg.Accural = envAccural
 	}
 	return cfg
 }
