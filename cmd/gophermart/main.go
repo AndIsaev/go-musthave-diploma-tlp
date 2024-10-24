@@ -7,8 +7,12 @@ import (
 
 func main() {
 	app := application.NewApp()
+	err := app.StartApp()
 
-	if err := app.StartApp(); err != nil {
-		log.Fatalf("close process with error: %s\n", err.Error())
-	}
+	defer func() {
+		app.Shutdown()
+		if err != nil {
+			log.Fatalf("close process with error: %s\n", err.Error())
+		}
+	}()
 }
