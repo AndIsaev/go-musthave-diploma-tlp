@@ -2,9 +2,11 @@ package application
 
 import (
 	"errors"
+
 	c "github.com/AndIsaev/go-musthave-diploma-tlp/cmd/gophermart/configuration"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage/postgres"
+	"github.com/go-chi/chi/v5"
 
 	"context"
 	"log"
@@ -16,11 +18,13 @@ type App struct {
 	Server *http.Server
 	Config *c.Config
 	DBConn storage.Storage
+	Router chi.Router
 }
 
 func NewApp() *App {
 	app := &App{Name: "Gophermart"}
 	app.Config = c.NewConfig()
+	app.Router = chi.NewRouter()
 	return app
 }
 
@@ -31,6 +35,7 @@ func (a *App) StartApp() error {
 		return err
 	}
 	a.DBConn = conn
+	a.initRouter()
 
 	log.Printf("start app - %v", a.Name)
 	return a.startHTTPServer()
@@ -40,6 +45,7 @@ func (a *App) StartApp() error {
 func (a *App) initHTTPServer() {
 	server := &http.Server{}
 	server.Addr = a.Config.Address
+	server.Handler = a.Router
 	a.Server = server
 }
 
