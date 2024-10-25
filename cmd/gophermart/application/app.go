@@ -60,7 +60,7 @@ func (a *App) startHTTPServer() error {
 func (a *App) Shutdown() {
 	ctx, cancel := context.WithCancel(context.Background())
 
-	if err := a.DBConn.Close(ctx); err != nil {
+	if err := a.DBConn.System().Close(ctx); err != nil {
 		log.Println(errors.Unwrap(err))
 	}
 

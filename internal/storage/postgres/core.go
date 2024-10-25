@@ -5,6 +5,8 @@ import (
 	"log"
 
 	"errors"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -22,10 +24,6 @@ func NewPostgresStorage(connString string) (*PostgresStorage, error) {
 	return &PostgresStorage{conn: conn}, nil
 }
 
-func (p *PostgresStorage) Close(ctx context.Context) error {
-	err := p.conn.Close(ctx)
-	if err != nil {
-		log.Println(errors.Unwrap(err))
-	}
-	return err
+func (p *PostgresStorage) System() storage.Inside {
+	return p
 }
