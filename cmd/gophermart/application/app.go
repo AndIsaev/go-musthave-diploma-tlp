@@ -35,6 +35,11 @@ func (a *App) StartApp() error {
 		return err
 	}
 	a.DBConn = conn
+	err = a.upMigrations()
+	if err != nil {
+		return err
+	}
+
 	a.initRouter()
 
 	log.Printf("start app - %v", a.Name)
@@ -65,4 +70,13 @@ func (a *App) Shutdown() {
 	}
 
 	defer cancel()
+}
+
+// upMigrations - run migrations of db
+func (a *App) upMigrations() error {
+	if err := a.DBConn.System().RunMigrations(context.Background()); err != nil {
+		return err
+	}
+	return nil
+
 }
