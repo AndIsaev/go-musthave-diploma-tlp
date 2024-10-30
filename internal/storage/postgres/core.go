@@ -1,29 +1,30 @@
 package postgres
 
 import (
-	"context"
-	"log"
-
-	"errors"
-
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage"
-	"github.com/jackc/pgx/v5"
+	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/jmoiron/sqlx"
+	"log"
 )
 
-type PostgresStorage struct {
-	conn *pgx.Conn
+type PgStorage struct {
+	db *sqlx.DB
 }
 
-func NewPostgresStorage(connString string) (*PostgresStorage, error) {
-	conn, err := pgx.Connect(context.Background(), connString)
+func NewPgStorage(connString string) (*PgStorage, error) {
+	conn, err := sqlx.Connect("pgx", connString)
 	if err != nil {
-		log.Println(errors.Unwrap(err))
+		log.Printf("unable to connect to database: %v\n", err)
 		return nil, err
 	}
 
-	return &PostgresStorage{conn: conn}, nil
+	return &PgStorage{db: conn}, nil
 }
 
-func (p *PostgresStorage) System() storage.Inside {
+func (p *PgStorage) System() storage.SystemRepository {
+	return p
+}
+
+func (p *PgStorage) User() storage.UserRepository {
 	return p
 }

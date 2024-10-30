@@ -2,11 +2,13 @@ package application
 
 import (
 	"errors"
-
 	c "github.com/AndIsaev/go-musthave-diploma-tlp/cmd/gophermart/configuration"
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/handler"
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/service"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage/postgres"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-playground/validator/v10"
 
 	"context"
 	"log"
@@ -14,11 +16,12 @@ import (
 )
 
 type App struct {
-	Name   string
-	Server *http.Server
-	Config *c.Config
-	DBConn storage.Storage
-	Router chi.Router
+	Name    string
+	Server  *http.Server
+	Config  *c.Config
+	DBConn  storage.Storage
+	Router  chi.Router
+	Handler *handler.Handler
 }
 
 func NewApp() *App {
@@ -30,7 +33,7 @@ func NewApp() *App {
 
 // StartApp - start app
 func (a *App) StartApp() error {
-	conn, err := postgres.NewPostgresStorage(a.Config.DB)
+	conn, err := postgres.NewPgStorage(a.Config.DB)
 	if err != nil {
 		return err
 	}
@@ -39,6 +42,8 @@ func (a *App) StartApp() error {
 	if err != nil {
 		return err
 	}
+	a.Handler = &handler.Handler{Validator: validator.New()}
+	a.Handler.UserService = &service.UserMethods{Storage: a.DBConn}
 
 	a.initRouter()
 
