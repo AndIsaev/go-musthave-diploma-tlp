@@ -15,7 +15,7 @@ func (a *App) initRouter() {
 	r := a.Router
 
 	r.Use(middleware.Logger, middleware.StripSlashes, middleware.CleanPath)
-	r.Use(mid.JsonMiddleware)
+	r.Use(mid.JSONMiddleware)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello, world!"))
