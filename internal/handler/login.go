@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func (h *Handler) Register() http.HandlerFunc {
+func (h *Handler) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		defer r.Body.Close()
@@ -25,20 +25,20 @@ func (h *Handler) Register() http.HandlerFunc {
 		}
 
 		ctx := r.Context()
-		user, err := h.UserService.Register(ctx, &params)
+		existsUser, err := h.UserService.Login(ctx, &params)
 		if err != nil {
-			h.writeJSONResponseError(w, err, http.StatusConflict)
+			h.writeJSONResponseError(w, err, http.StatusUnauthorized)
 			return
 		}
 
-		response, err := json.Marshal(user)
+		response, err := json.Marshal(existsUser)
 		if err != nil {
-			log.Printf("can't serialize: %v", user)
+			log.Printf("can't serialize: %v", params)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
-		w.Header().Set("Authorization", user.Token)
+		w.Header().Set("Authorization", existsUser.Token)
 		w.WriteHeader(http.StatusOK)
 		w.Write(response)
 	}

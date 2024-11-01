@@ -19,5 +19,6 @@ type SystemRepository interface {
 
 type UserRepository interface {
 	GetUserByLogin(context.Context, *model.UserLogin) (*model.User, error)
-	CreateUser(ctx context.Context, user *model.User) (*model.UserResponse, error)
+	CreateUser(ctx context.Context, user *model.AuthParams) (*model.UserWithToken, error)
+	Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error)
 }

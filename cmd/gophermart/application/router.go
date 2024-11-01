@@ -23,6 +23,7 @@ func (a *App) initRouter() {
 
 	r.Route("/api/user", func(r chi.Router) {
 		r.Post("/register", a.Handler.Register()) // POST
+		r.Post("/login", a.Handler.Login())       // POST
 
 	})
 
