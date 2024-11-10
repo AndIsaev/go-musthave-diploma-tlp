@@ -71,7 +71,6 @@ func (p *PgStorage) SetUserOrder(ctx context.Context, params *model.UserOrder) (
 
 	err := p.db.QueryRowContext(ctx, query, params.Number, params.UserId).Scan(&val.ID, &val.UserId, &val.Number)
 	if err != nil {
-		log.Printf(err.Error())
 		log.Printf("can't set order for user - %v", params.UserLogin)
 		return nil, err
 	}
