@@ -52,7 +52,7 @@ func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*m
 	if err != nil {
 		return nil, err
 	}
-	params.UserId = user.ID
+	params.UserID = user.ID
 
 	existsOrder, err := s.Storage.User().GetOrderByNumber(ctx, params)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -63,13 +63,13 @@ func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*m
 		return newOrder, nil
 	}
 
-	if existsOrder.UserId != params.UserId {
+	if existsOrder.UserID != params.UserID {
 		log.Println("the order already set for another user")
 		return nil, exception.OrderAlreadyExistsAnotherUser
 
 	}
 
-	if existsOrder.UserId == params.UserId {
+	if existsOrder.UserID == params.UserID {
 		log.Println("the order already set for this user")
 		return nil, exception.OrderAlreadyExists
 	}

@@ -69,7 +69,7 @@ func (p *PgStorage) SetUserOrder(ctx context.Context, params *model.UserOrder) (
 
 	query := `INSERT INTO orders (number, user_id) VALUES ($1, $2) RETURNING id, number, user_id;`
 
-	err := p.db.QueryRowContext(ctx, query, params.Number, params.UserId).Scan(&val.ID, &val.UserId, &val.Number)
+	err := p.db.QueryRowContext(ctx, query, params.Number, params.UserID).Scan(&val.ID, &val.UserID, &val.Number)
 	if err != nil {
 		log.Printf("can't set order for user - %v", params.UserLogin)
 		return nil, err
