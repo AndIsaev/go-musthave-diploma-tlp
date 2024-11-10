@@ -2,8 +2,8 @@ package exception
 
 import "errors"
 
-var OrderAlreadyExistsAnotherUser = errors.New("the order already set for another user")
+var ErrOrderAlreadyExistsAnotherUser = errors.New("the order already set for another user")
 
-var OrderAlreadyExists = errors.New("the order already exists")
+var ErrOrderAlreadyExists = errors.New("the order already exists")
 
-var InvalidOrderNumber = errors.New("invalid order number format")
+var ErrInvalidOrderNumber = errors.New("invalid order number format")

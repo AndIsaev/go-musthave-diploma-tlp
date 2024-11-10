@@ -24,7 +24,7 @@ func (h *Handler) SetOrder() http.HandlerFunc {
 		}
 
 		if !isLuhnValid(number) {
-			h.writeJSONResponseError(w, exception.InvalidOrderNumber, http.StatusUnprocessableEntity)
+			h.writeJSONResponseError(w, exception.ErrInvalidOrderNumber, http.StatusUnprocessableEntity)
 			return
 		}
 
@@ -47,12 +47,12 @@ func (h *Handler) SetOrder() http.HandlerFunc {
 		params.UserLogin = login
 
 		val, err := h.UserService.SetOrder(r.Context(), &params)
-		if errors.Is(err, exception.OrderAlreadyExistsAnotherUser) {
+		if errors.Is(err, exception.ErrOrderAlreadyExistsAnotherUser) {
 			h.writeJSONResponseError(w, err, http.StatusConflict)
 			return
 		}
 
-		if errors.Is(err, exception.OrderAlreadyExists) {
+		if errors.Is(err, exception.ErrOrderAlreadyExists) {
 			h.writeJSONResponseError(w, err, http.StatusOK)
 			return
 		}
