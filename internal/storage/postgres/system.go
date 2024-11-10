@@ -24,12 +24,21 @@ func (p *PgStorage) RunMigrations(ctx context.Context) error {
 
 	_, err := p.db.ExecContext(ctx,
 		`create table if not exists users (
-			id SERIAL PRIMARY KEY,
-			login VARCHAR(255) NOT NULL UNIQUE,
-			password VARCHAR(255) NOT NULL,
-			created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-			);`,
-	)
+					id serial  primary key,
+					login varchar(255) not null unique,
+					password varchar(255) not null,
+					created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+					);
+				create table if not exists orders (
+					id serial primary key,
+					user_id integer not null,
+					number bigint not null ,
+					foreign key (user_id) references users (id),
+					unique (number, user_id)
+				    );
+
+`)
+
 	if err != nil {
 		return fmt.Errorf("can't run migratons: %v", err.Error())
 	}

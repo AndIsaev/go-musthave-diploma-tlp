@@ -63,6 +63,33 @@ func (p *PgStorage) Login(ctx context.Context, params *model.AuthParams) (*model
 
 }
 
+// SetUserOrder - uploading the user's order number
+func (p *PgStorage) SetUserOrder(ctx context.Context, params *model.UserOrder) (*model.Order, error) {
+	var val model.Order
+
+	query := `INSERT INTO orders (number, user_id) VALUES ($1, $2) RETURNING id, number, user_id;`
+
+	err := p.db.QueryRowContext(ctx, query, params.Number, params.UserId).Scan(&val.ID, &val.UserId, &val.Number)
+	if err != nil {
+		log.Printf(err.Error())
+		log.Printf("can't set order for user - %v", params.UserLogin)
+		return nil, err
+	}
+
+	return &val, nil
+}
+
+func (p *PgStorage) GetOrderByNumber(ctx context.Context, params *model.UserOrder) (*model.Order, error) {
+	var val model.Order
+	query := "SELECT id, number, user_id FROM orders WHERE number = $1;"
+
+	err := p.db.GetContext(ctx, &val, query, params.Number)
+	if err != nil {
+		return nil, err
+	}
+	return &val, nil
+}
+
 func CheckPasswordHash(password, hash string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }

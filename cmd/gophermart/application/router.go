@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	mid "github.com/AndIsaev/go-musthave-diploma-tlp/internal/handler/middleware"
-	// "github.com/AndIsaev/go-musthave-diploma-tlp/internal/service"
 
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -24,6 +23,11 @@ func (a *App) initRouter() {
 	r.Route("/api/user", func(r chi.Router) {
 		r.Post("/register", a.Handler.Register()) // POST
 		r.Post("/login", a.Handler.Login())       // POST
+
+		r.Group(func(r chi.Router) {
+			r.Use(mid.JwtAuthMiddleware)
+			r.Post("/orders", a.Handler.SetOrder())
+		})
 
 	})
 

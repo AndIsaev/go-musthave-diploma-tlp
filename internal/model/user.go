@@ -36,3 +36,18 @@ type AuthParams struct {
 	Login    string
 	Password string
 }
+
+type UserOrder struct {
+	ID        int `json:"id" db:"id"`
+	UserId    int `json:"user_id" db:"user_id"`
+	Number    int `json:"number" db:"number" validate:"required,min=0"`
+	UserLogin UserLogin
+}
+
+type Order struct {
+	ID     int `json:"id" db:"id"`
+	UserId int `json:"user_id" db:"user_id"`
+	Number int `json:"number" db:"number" validate:"required,min=0"`
+}
+
+type ContextKey string

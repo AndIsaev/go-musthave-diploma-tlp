@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/exception"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage"
 	"log"
@@ -12,6 +13,7 @@ import (
 type Service interface {
 	Register(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error)
 	Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error)
+	SetOrder(ctx context.Context, params *model.UserOrder) (*model.Order, error)
 }
 
 type UserMethods struct {
@@ -43,4 +45,34 @@ func (s *UserMethods) Login(ctx context.Context, params *model.AuthParams) (*mod
 	}
 
 	return user, nil
+}
+
+func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*model.Order, error) {
+	user, err := s.Storage.User().GetUserByLogin(ctx, &params.UserLogin)
+	if err != nil {
+		return nil, err
+	}
+	params.UserId = user.ID
+
+	existsOrder, err := s.Storage.User().GetOrderByNumber(ctx, params)
+	if errors.Is(err, sql.ErrNoRows) {
+		newOrder, err := s.Storage.User().SetUserOrder(ctx, params)
+		if err != nil {
+			return nil, err
+		}
+		return newOrder, nil
+	}
+
+	if existsOrder.UserId != params.UserId {
+		log.Println("the order already set for another user")
+		return nil, exception.OrderAlreadyExistsAnotherUser
+
+	}
+
+	if existsOrder.UserId == params.UserId {
+		log.Println("the order already set for this user")
+		return nil, exception.OrderAlreadyExists
+	}
+	return nil, err
+
 }
