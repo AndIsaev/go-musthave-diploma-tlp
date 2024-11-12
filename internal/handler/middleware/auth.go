@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/handler"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"github.com/golang-jwt/jwt/v5"
 	"net/http"
@@ -24,7 +25,7 @@ func JwtAuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		key := model.ContextKey("login")
+		key := handler.ContextKey("login")
 		ctx := context.WithValue(r.Context(), key, model.UserLogin{Username: claims.Login})
 
 		r = r.WithContext(ctx)

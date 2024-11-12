@@ -28,13 +28,13 @@ func (h *Handler) SetOrder() http.HandlerFunc {
 			return
 		}
 
-		params.Number = number
+		params.Number = strconv.Itoa(number)
 
 		if err := h.Validator.Struct(params); err != nil {
 			h.writeJSONValidatorResponse(w, err)
 			return
 		}
-		key := model.ContextKey("login")
+		key := ContextKey("login")
 
 		login, ok := r.Context().Value(key).(model.UserLogin)
 		if !ok {

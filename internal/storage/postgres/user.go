@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 	"log"
@@ -67,11 +68,13 @@ func (p *PgStorage) Login(ctx context.Context, params *model.AuthParams) (*model
 func (p *PgStorage) SetUserOrder(ctx context.Context, params *model.UserOrder) (*model.Order, error) {
 	var val model.Order
 
-	query := `INSERT INTO orders (number, user_id) VALUES ($1, $2) RETURNING id, number, user_id;`
+	query := `INSERT INTO orders (number, user_id, status) VALUES ($1, $2, $3) RETURNING id, number, user_id, status;`
 
-	err := p.db.QueryRowContext(ctx, query, params.Number, params.UserID).Scan(&val.ID, &val.UserID, &val.Number)
+	err := p.db.QueryRowContext(ctx, query, params.Number, params.UserID, params.Status).
+		Scan(&val.ID, &val.Number, &val.UserID, &val.Status)
 	if err != nil {
-		log.Printf("can't set order for user - %v", params.UserLogin)
+		fmt.Println(err)
+		log.Printf("can't set order for user - %v", params.UserLogin.Username)
 		return nil, err
 	}
 
@@ -80,7 +83,7 @@ func (p *PgStorage) SetUserOrder(ctx context.Context, params *model.UserOrder) (
 
 func (p *PgStorage) GetOrderByNumber(ctx context.Context, params *model.UserOrder) (*model.Order, error) {
 	var val model.Order
-	query := "SELECT id, number, user_id FROM orders WHERE number = $1;"
+	query := "SELECT id, number, user_id, status, accrual FROM orders WHERE number = $1;"
 
 	err := p.db.GetContext(ctx, &val, query, params.Number)
 	if err != nil {

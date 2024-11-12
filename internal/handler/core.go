@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+type ContextKey string
+
 type Handler struct {
 	UserService service.Service
 	Validator   *validator.Validate

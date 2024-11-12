@@ -32,7 +32,9 @@ func (p *PgStorage) RunMigrations(ctx context.Context) error {
 				create table if not exists orders (
 					id serial primary key,
 					user_id integer not null,
-					number bigint not null ,
+					number varchar(255) not null ,
+					status varchar(255) not null,
+				    accrual integer,
 					foreign key (user_id) references users (id),
 					unique (number, user_id)
 				    );

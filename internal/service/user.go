@@ -56,6 +56,7 @@ func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*m
 
 	existsOrder, err := s.Storage.User().GetOrderByNumber(ctx, params)
 	if errors.Is(err, sql.ErrNoRows) {
+		params.Status = model.NEW
 		newOrder, err := s.Storage.User().SetUserOrder(ctx, params)
 		if err != nil {
 			return nil, err
