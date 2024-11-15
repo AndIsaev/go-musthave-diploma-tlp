@@ -69,6 +69,45 @@ func (h *Handler) SetOrder() http.HandlerFunc {
 	}
 }
 
+func (h *Handler) ListUserOrders() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		defer r.Body.Close()
+
+		key := ContextKey("login")
+
+		login, ok := r.Context().Value(key).(model.UserLogin)
+		if !ok {
+			response, _ := json.Marshal(Response{Message: "could not find login in context"})
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write(response)
+			return
+		}
+
+		orders, err := h.UserService.GetUserOrders(r.Context(), &login)
+		if err != nil {
+			response, _ := json.Marshal(Response{Message: "internal server error"})
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write(response)
+			return
+		}
+		if orders == nil {
+			h.writeJSONResponseError(w, exception.ErrNotContentOfUser, http.StatusNoContent)
+			return
+		}
+
+		response, err := json.Marshal(orders)
+		if err != nil {
+			log.Printf("can't serialize: %v", orders)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
+	}
+}
+
 func isLuhnValid(orderNumber int) bool {
 	orderStr := strconv.Itoa(orderNumber)
 

@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type Status string
 
 const (
@@ -10,11 +12,12 @@ const (
 )
 
 type Order struct {
-	ID      int    `json:"id" db:"id"`
-	UserID  int    `json:"user_id" db:"user_id"`
-	Number  string `json:"number" db:"number"`
-	Status  Status `json:"status" db:"status"`
-	Accrual *int   `json:"accrual,omitempty" db:"accrual,omitempty"`
+	ID         *int      `json:"id,omitempty" db:"id"`
+	UserID     int       `json:"user_id,omitempty" db:"user_id"`
+	Number     string    `json:"number" db:"number"`
+	Status     Status    `json:"status" db:"status"`
+	Accrual    *int      `json:"accrual,omitempty" db:"accrual,omitempty"`
+	UploadedAt time.Time `json:"uploaded_at" db:"uploaded_at"`
 }
 
 type UserOrder struct {

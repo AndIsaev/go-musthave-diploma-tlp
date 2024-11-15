@@ -35,6 +35,7 @@ func (p *PgStorage) RunMigrations(ctx context.Context) error {
 					number varchar(255) not null ,
 					status varchar(255) not null,
 				    accrual integer,
+				    uploaded_at timestamp with time zone, 
 					foreign key (user_id) references users (id),
 					unique (number, user_id)
 				    );

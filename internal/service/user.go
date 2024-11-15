@@ -14,6 +14,7 @@ type Service interface {
 	Register(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error)
 	Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error)
 	SetOrder(ctx context.Context, params *model.UserOrder) (*model.Order, error)
+	GetUserOrders(ctx context.Context, login *model.UserLogin) (orders []model.Order, err error)
 }
 
 type UserMethods struct {
@@ -75,5 +76,20 @@ func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*m
 		return nil, exception.ErrOrderAlreadyExists
 	}
 	return nil, err
+
+}
+
+func (s *UserMethods) GetUserOrders(ctx context.Context, login *model.UserLogin) (orders []model.Order, err error) {
+	user, err := s.Storage.User().GetUserByLogin(ctx, login)
+	if err != nil {
+		return nil, err
+	}
+
+	orders, err = s.Storage.User().ListOrdersById(ctx, user.ID)
+	if err != nil {
+		log.Println("error when trying to receive user orders")
+		return
+	}
+	return
 
 }

@@ -23,4 +23,7 @@ type UserRepository interface {
 	Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error)
 	SetUserOrder(ctx context.Context, params *model.UserOrder) (*model.Order, error)
 	GetOrderByNumber(ctx context.Context, params *model.UserOrder) (*model.Order, error)
+	ListOrders(ctx context.Context) ([]model.Order, error)
+	UpdateOrder(ctx context.Context, order *model.Order) error
+	ListOrdersById(ctx context.Context, userID int) (orders []model.Order, err error)
 }

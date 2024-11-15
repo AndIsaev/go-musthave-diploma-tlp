@@ -27,6 +27,7 @@ func (a *App) initRouter() {
 		r.Group(func(r chi.Router) {
 			r.Use(mid.JwtAuthMiddleware)
 			r.Post("/orders", a.Handler.SetOrder())
+			r.Get("/orders", a.Handler.ListUserOrders())
 		})
 
 	})

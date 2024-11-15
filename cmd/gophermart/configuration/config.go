@@ -8,7 +8,7 @@ import (
 type Config struct {
 	Address string `env:"RUN_ADDRESS"`
 	DB      string `env:"DATABASE_URI"`
-	Accural string `env:"ACCRUAL_SYSTEM_ADDRESS"`
+	Accrual string `env:"ACCRUAL_SYSTEM_ADDRESS"`
 }
 
 func NewConfig() *Config {
@@ -16,7 +16,7 @@ func NewConfig() *Config {
 
 	flag.StringVar(&cfg.Address, "a", "localhost:8000", "address for your server")
 	flag.StringVar(&cfg.DB, "d", "", "connection for postgres")
-	flag.StringVar(&cfg.Accural, "r", "localhost:9000", "accural system")
+	flag.StringVar(&cfg.Accrual, "r", "localhost:8080", "accural system")
 
 	flag.Parse()
 
@@ -28,8 +28,8 @@ func NewConfig() *Config {
 		cfg.DB = envDB
 	}
 
-	if envAccural := os.Getenv("ACCRUAL_SYSTEM_ADDRESS"); envAccural != "" {
-		cfg.Accural = envAccural
+	if envAccrual := os.Getenv("ACCRUAL_SYSTEM_ADDRESS"); envAccrual != "" {
+		cfg.Accrual = envAccrual
 	}
 	return cfg
 }
