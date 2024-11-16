@@ -208,16 +208,9 @@ func (a *App) getAccrualOrders(order *model.Order) error {
 		SetResult(&order).
 		Get(fmt.Sprintf("/api/orders/%v", order.Number))
 
-	log.Println("++++++++++++++++++++++++++++++")
-	fmt.Println(err)
-	log.Println("++++++++++++++++++++++++++++++")
-
 	if err != nil {
 		return errors.Unwrap(err)
 	}
-	log.Println("================================")
-	log.Println(order)
-	log.Println("================================")
 
 	return nil
 }
