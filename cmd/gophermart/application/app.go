@@ -2,6 +2,7 @@ package application
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"log"
@@ -184,19 +185,25 @@ func (a *App) worker(ctx context.Context, ch chan model.Order, w int) {
 		default:
 
 			order := <-ch
-			log.Printf("worker #%d sent value - %v\n", w, order.Number)
+			log.Printf("worker #%d sent value - %v to accrual service\n", w, order.Number)
 			err := a.getAccrualOrders(&order)
-
-			if &order.Status != nil {
-				err := a.DBConn.User().UpdateOrder(ctx, &order)
-				if err != nil {
-					a.ErrChan <- err
-				}
-			}
 			if err != nil {
 				a.ErrChan <- err
 			}
 
+			err = a.DBConn.User().UpdateOrder(ctx, &order)
+			if err != nil {
+				a.ErrChan <- err
+			}
+
+			if order.Status == model.PROCESSED {
+				// set current balance for user
+
+				err := a.updateCurrentBalance(ctx, order)
+				if err != nil {
+					a.ErrChan <- err
+				}
+			}
 		}
 	}
 }
@@ -208,16 +215,9 @@ func (a *App) getAccrualOrders(order *model.Order) error {
 		SetResult(&order).
 		Get(fmt.Sprintf("/api/orders/%v", order.Number))
 
-	log.Println("++++++++++++++++++++++++++++++")
-	fmt.Println(err)
-	log.Println("++++++++++++++++++++++++++++++")
-
 	if err != nil {
 		return errors.Unwrap(err)
 	}
-	log.Println("================================")
-	log.Println(order)
-	log.Println("================================")
 
 	return nil
 }
@@ -226,4 +226,23 @@ func (a *App) initHTTPClient() *resty.Client {
 	cli := resty.New()
 	cli.SetBaseURL(a.Config.Accrual)
 	return cli
+}
+
+func (a *App) updateCurrentBalance(ctx context.Context, order model.Order) error {
+	_, err := a.DBConn.User().GetBalance(ctx, order.UserID)
+	if errors.Is(err, sql.ErrNoRows) {
+		log.Println("try creating new instance of balance")
+		_, err := a.DBConn.User().CreateBalance(ctx, *order.Accrual, order.UserID)
+		if err != nil {
+			log.Println("error when creating a balance")
+			return err
+		}
+		return nil
+	}
+	err = a.DBConn.User().UpdateBalance(ctx, *order.Accrual, order.UserID)
+	if err != nil {
+		log.Println("can't update balance")
+		return err
+	}
+	return nil
 }

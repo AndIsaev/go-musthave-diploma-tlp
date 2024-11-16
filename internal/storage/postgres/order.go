@@ -53,9 +53,10 @@ func (p *PgStorage) ListOrders(ctx context.Context) (ids []model.Order, err erro
 
 func (p *PgStorage) UpdateOrder(ctx context.Context, order *model.Order) error {
 
-	query := `UPDATE orders SET accrual = $1, status = $2 WHERE id = $3;`
+	query := `UPDATE orders SET accrual = $1, status = $2 WHERE id = $3 RETURNING id, number, user_id, status;`
 
-	_, err := p.db.ExecContext(ctx, query, order.Accrual, order.Status, order.ID)
+	err := p.db.QueryRowContext(ctx, query, order.Accrual, order.Status, order.ID).
+		Scan(&order.ID, &order.Number, &order.UserID, &order.Status)
 	if err != nil {
 		log.Printf("can't update order")
 		return err

@@ -11,14 +11,14 @@ import (
 )
 
 func (p *PgStorage) GetUserByLogin(ctx context.Context, userLogin *model.UserLogin) (*model.User, error) {
-	val := model.User{}
+	user := &model.User{}
 	query := "SELECT id, login, password FROM users WHERE login = $1;"
 
-	err := p.db.GetContext(ctx, &val, query, userLogin.Username)
+	err := p.db.GetContext(ctx, user, query, userLogin.Username)
 	if err != nil {
 		return nil, err
 	}
-	return &val, nil
+	return user, nil
 }
 
 func (p *PgStorage) CreateUser(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error) {

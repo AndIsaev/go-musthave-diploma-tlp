@@ -39,6 +39,12 @@ func (p *PgStorage) RunMigrations(ctx context.Context) error {
 					foreign key (user_id) references users (id),
 					unique (number, user_id)
 				    );
+				create table if not exists balance (
+					id serial primary key,
+					user_id integer not null unique,
+				    current float default 0 not null check (current > 0),
+					foreign key (user_id) references users (id)
+				    );
 
 `)
 

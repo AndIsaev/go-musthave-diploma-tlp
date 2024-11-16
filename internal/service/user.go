@@ -15,6 +15,7 @@ type Service interface {
 	Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error)
 	SetOrder(ctx context.Context, params *model.UserOrder) (*model.Order, error)
 	GetUserOrders(ctx context.Context, login *model.UserLogin) (orders []model.Order, err error)
+	//SetNewBalance(ctx context.Context, login *model.UserLogin, balance *model.Balance) (*model.Balance, error)
 }
 
 type UserMethods struct {
@@ -51,6 +52,7 @@ func (s *UserMethods) Login(ctx context.Context, params *model.AuthParams) (*mod
 func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*model.Order, error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, &params.UserLogin)
 	if err != nil {
+		log.Println("user with such login not found")
 		return nil, err
 	}
 	params.UserID = user.ID
@@ -91,5 +93,18 @@ func (s *UserMethods) GetUserOrders(ctx context.Context, login *model.UserLogin)
 		return
 	}
 	return
+}
 
+func (s *UserMethods) GetUserBalance(ctx context.Context, login *model.UserLogin) (*model.Balance, error) {
+	user, err := s.Storage.User().GetUserByLogin(ctx, login)
+	if err != nil {
+		return nil, err
+	}
+
+	balance, err := s.Storage.User().GetBalance(ctx, user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return balance, nil
 }

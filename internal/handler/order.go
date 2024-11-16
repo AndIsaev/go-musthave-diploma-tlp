@@ -92,7 +92,7 @@ func (h *Handler) ListUserOrders() http.HandlerFunc {
 			return
 		}
 		if orders == nil {
-			h.writeJSONResponseError(w, exception.ErrNotContentOfUser, http.StatusNoContent)
+			w.WriteHeader(http.StatusNoContent)
 			return
 		}
 
