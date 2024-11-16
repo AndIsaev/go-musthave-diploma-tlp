@@ -34,7 +34,7 @@ func (p *PgStorage) GetOrderByNumber(ctx context.Context, params *model.UserOrde
 }
 
 func (p *PgStorage) ListOrdersById(ctx context.Context, userID int) (orders []model.Order, err error) {
-	query := `SELECT number, status, accrual, uploaded_at FROM orders WHERE user_id = $1`
+	query := `SELECT number, status, accrual, uploaded_at FROM orders WHERE user_id = $1 ORDER BY uploaded_at DESC`
 	err = p.db.SelectContext(ctx, &orders, query, userID)
 	if err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func (p *PgStorage) ListOrdersById(ctx context.Context, userID int) (orders []mo
 }
 
 func (p *PgStorage) ListOrders(ctx context.Context) (ids []model.Order, err error) {
-	query := `SELECT id, number, status FROM orders WHERE status not in ($1, $2)`
+	query := `SELECT id, number, status FROM orders WHERE status not in ($1, $2) ORDER BY uploaded_at DESC`
 	err = p.db.SelectContext(ctx, &ids, query, model.PROCESSED, model.INVALID)
 	if err != nil {
 		return nil, err

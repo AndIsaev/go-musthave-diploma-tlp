@@ -204,19 +204,26 @@ func (a *App) worker(ctx context.Context, ch chan model.Order, w int) {
 func (a *App) getAccrualOrders(order *model.Order) error {
 	_, err := a.Client.R().
 		SetHeader("Content-Type", "application/json").
-		SetBody(order).
+		SetBody(&order).
 		SetResult(&order).
 		Get(fmt.Sprintf("/api/orders/%v", order.Number))
+
+	log.Println("++++++++++++++++++++++++++++++")
+	fmt.Println(err)
+	log.Println("++++++++++++++++++++++++++++++")
 
 	if err != nil {
 		return errors.Unwrap(err)
 	}
+	log.Println("================================")
+	log.Println(order)
+	log.Println("================================")
 
 	return nil
 }
 
 func (a *App) initHTTPClient() *resty.Client {
 	cli := resty.New()
-	cli.SetBaseURL("http://" + a.Config.Accrual)
+	cli.SetBaseURL(a.Config.Accrual)
 	return cli
 }

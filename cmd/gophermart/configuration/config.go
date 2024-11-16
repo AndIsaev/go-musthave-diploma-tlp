@@ -16,7 +16,7 @@ func NewConfig() *Config {
 
 	flag.StringVar(&cfg.Address, "a", "localhost:8000", "address for your server")
 	flag.StringVar(&cfg.DB, "d", "", "connection for postgres")
-	flag.StringVar(&cfg.Accrual, "r", "localhost:8080", "accural system")
+	flag.StringVar(&cfg.Accrual, "r", "localhost:8080", "accrual system")
 
 	flag.Parse()
 
