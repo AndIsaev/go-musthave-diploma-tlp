@@ -18,3 +18,14 @@ func (p *PgStorage) CreateWithdraw(ctx context.Context, withdraw *model.Withdraw
 
 	return val, nil
 }
+
+func (p *PgStorage) GetListWithdrawnBalance(ctx context.Context, userID int) (values []model.Withdrawal, err error) {
+	query := `select number, price, processed_at from withdraw
+				where user_id = $1
+				order by processed_at desc;`
+	err = p.db.SelectContext(ctx, &values, query, userID)
+	if err != nil {
+		return nil, err
+	}
+	return
+}
