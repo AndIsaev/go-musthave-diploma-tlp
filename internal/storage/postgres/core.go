@@ -28,3 +28,7 @@ func (p *PgStorage) System() storage.SystemRepository {
 func (p *PgStorage) User() storage.UserRepository {
 	return p
 }
+
+func (p *PgStorage) Order() storage.OrderRepository {
+	return p
+}

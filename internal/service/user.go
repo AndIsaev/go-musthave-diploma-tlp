@@ -59,10 +59,10 @@ func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*m
 	}
 	params.UserID = user.ID
 
-	existsOrder, err := s.Storage.User().GetOrderByNumber(ctx, params)
+	existsOrder, err := s.Storage.Order().GetOrderByNumber(ctx, params)
 	if errors.Is(err, sql.ErrNoRows) {
 		params.Status = model.NEW
-		newOrder, err := s.Storage.User().SetUserOrder(ctx, params)
+		newOrder, err := s.Storage.Order().SetUserOrder(ctx, params)
 		if err != nil {
 			return nil, err
 		}
@@ -89,7 +89,7 @@ func (s *UserMethods) GetUserOrders(ctx context.Context, login *model.UserLogin)
 		return nil, err
 	}
 
-	orders, err = s.Storage.User().ListOrdersByUserID(ctx, user.ID)
+	orders, err = s.Storage.Order().ListOrdersByUserID(ctx, user.ID)
 	if err != nil {
 		log.Println("error when trying to receive user orders")
 		return

@@ -150,7 +150,7 @@ func (a *App) runUpdateOrders(ctx context.Context, ch chan model.Order) {
 }
 
 func (a *App) getOrders(ctx context.Context, ch chan model.Order) {
-	orders, err := a.DBConn.User().ListOrders(ctx)
+	orders, err := a.DBConn.Order().ListOrders(ctx)
 	if err != nil {
 		log.Println("error receiving orders: ", err)
 		a.ErrChan <- err
@@ -191,7 +191,7 @@ func (a *App) worker(ctx context.Context, ch chan model.Order, w int) {
 				a.ErrChan <- err
 			}
 
-			err = a.DBConn.User().UpdateOrder(ctx, &order)
+			err = a.DBConn.Order().UpdateOrder(ctx, &order)
 			if err != nil {
 				a.ErrChan <- err
 			}
