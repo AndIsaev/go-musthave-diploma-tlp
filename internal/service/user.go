@@ -17,7 +17,7 @@ type Service interface {
 	GetUserOrders(ctx context.Context, login *model.UserLogin) (orders []model.Order, err error)
 	DeductPoints(ctx context.Context, withdraw *model.Withdraw, login *model.UserLogin) (*model.Withdraw, error)
 	GetUserBalance(ctx context.Context, login *model.UserLogin) (*model.Balance, error)
-	GetUserWithdrawals(ctx context.Context, login *model.UserLogin) ([]model.BalanceWithTime, error)
+	GetUserWithdrawals(ctx context.Context, login *model.UserLogin) ([]model.Withdrawal, error)
 }
 
 type UserMethods struct {
@@ -139,7 +139,7 @@ func (s *UserMethods) DeductPoints(ctx context.Context, withdraw *model.Withdraw
 	return newWithdraw, nil
 }
 
-func (s *UserMethods) GetUserWithdrawals(ctx context.Context, login *model.UserLogin) (values []model.BalanceWithTime, err error) {
+func (s *UserMethods) GetUserWithdrawals(ctx context.Context, login *model.UserLogin) (values []model.Withdrawal, err error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, login)
 	if err != nil {
 		return nil, err

@@ -30,6 +30,5 @@ type UserRepository interface {
 	CreateBalance(ctx context.Context, current float64, userID int) (*model.Balance, error)
 	UpdateBalance(ctx context.Context, current float64, userID int) error
 	CreateWithdraw(ctx context.Context, withdraw *model.Withdraw, userID int) (*model.Withdraw, error)
-	//GetWithdrawnBalance(ctx context.Context, userID int) (*model.Balance, error)
-	GetListWithdrawnBalance(ctx context.Context, userID int) (values []model.BalanceWithTime, err error)
+	GetListWithdrawnBalance(ctx context.Context, userID int) (values []model.Withdrawal, err error)
 }

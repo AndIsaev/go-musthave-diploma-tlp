@@ -69,7 +69,7 @@ func (p *PgStorage) GetWithdrawnBalance(ctx context.Context, userID int) (*model
 	return &val, nil
 }
 
-func (p *PgStorage) GetListWithdrawnBalance(ctx context.Context, userID int) (values []model.BalanceWithTime, err error) {
+func (p *PgStorage) GetListWithdrawnBalance(ctx context.Context, userID int) (values []model.Withdrawal, err error) {
 	query := `select number, price, processed_at from withdraw
 				where user_id = $1
 				order by processed_at desc;`
