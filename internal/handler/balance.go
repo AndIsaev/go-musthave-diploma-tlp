@@ -3,16 +3,16 @@ package handler
 import (
 	"encoding/json"
 	"errors"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/exception"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/exception"
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 )
 
 func (h *Handler) CheckBalance() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		defer r.Body.Close()
 
 		key := ContextKey("login")
@@ -91,7 +91,6 @@ func (h *Handler) Withdraw() http.HandlerFunc {
 
 func (h *Handler) GetWithdrawals() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		defer r.Body.Close()
 
 		key := ContextKey("login")

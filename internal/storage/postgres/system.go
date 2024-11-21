@@ -59,5 +59,4 @@ func (p *PgStorage) RunMigrations(ctx context.Context) error {
 		return fmt.Errorf("can't run migratons: %v", err.Error())
 	}
 	return nil
-
 }

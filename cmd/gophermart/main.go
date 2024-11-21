@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/AndIsaev/go-musthave-diploma-tlp/cmd/gophermart/application"
 	"log"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/cmd/gophermart/application"
 )
 
 func main() {

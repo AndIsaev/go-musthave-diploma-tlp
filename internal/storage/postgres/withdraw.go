@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"context"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"log"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 )
 
 func (p *PgStorage) CreateWithdraw(ctx context.Context, withdraw *model.Withdraw, userID int) (*model.Withdraw, error) {

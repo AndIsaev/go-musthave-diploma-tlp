@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"context"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"log"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 )
 
 // SetUserOrder - uploading the user's order number
@@ -56,7 +57,6 @@ func (p *PgStorage) ListOrders(ctx context.Context) (ids []model.Order, err erro
 }
 
 func (p *PgStorage) UpdateOrder(ctx context.Context, order *model.Order) error {
-
 	query := `UPDATE orders SET accrual = $1, status = $2 WHERE id = $3 RETURNING id, number, user_id, status;`
 
 	err := p.db.QueryRowContext(ctx, query, order.Accrual, order.Status, order.ID).

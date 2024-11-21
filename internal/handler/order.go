@@ -3,16 +3,16 @@ package handler
 import (
 	"encoding/json"
 	"errors"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/exception"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/exception"
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 )
 
 func (h *Handler) SetOrder() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		defer r.Body.Close()
 
 		params := model.UserOrder{}
@@ -71,7 +71,6 @@ func (h *Handler) SetOrder() http.HandlerFunc {
 
 func (h *Handler) ListUserOrders() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		defer r.Body.Close()
 
 		key := ContextKey("login")

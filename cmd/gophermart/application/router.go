@@ -1,11 +1,11 @@
 package application
 
 import (
-	"github.com/go-chi/chi/v5"
 	"net/http"
 
 	mid "github.com/AndIsaev/go-musthave-diploma-tlp/internal/handler/middleware"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
 
@@ -32,7 +32,5 @@ func (a *App) initRouter() {
 			r.Get("/withdrawals", a.Handler.GetWithdrawals())
 			r.Post("/balance/withdraw", a.Handler.Withdraw())
 		})
-
 	})
-
 }

@@ -2,11 +2,13 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/service"
-	"github.com/go-playground/validator/v10"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/go-playground/validator/v10"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/service"
 )
 
 type ContextKey string

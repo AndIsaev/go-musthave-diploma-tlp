@@ -10,15 +10,16 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-playground/validator/v10"
+	"github.com/go-resty/resty/v2"
+
 	c "github.com/AndIsaev/go-musthave-diploma-tlp/cmd/gophermart/configuration"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/handler"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/service"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage/postgres"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-playground/validator/v10"
-	"github.com/go-resty/resty/v2"
 )
 
 type App struct {
@@ -60,7 +61,7 @@ func (a *App) StartApp() (err error) {
 	}
 	a.Client = a.initHTTPClient()
 	a.Handler = &handler.Handler{Validator: validator.New()}
-	a.Handler.UserService = &service.UserMethods{Storage: a.DBConn}
+	a.Handler.UserService = &service.Methods{Storage: a.DBConn}
 
 	a.initRouter()
 
@@ -134,7 +135,6 @@ func (a *App) upMigrations() error {
 		return err
 	}
 	return nil
-
 }
 
 func (a *App) runUpdateOrders(ctx context.Context, ch chan model.Order) {
@@ -154,13 +154,13 @@ func (a *App) getOrders(ctx context.Context, ch chan model.Order) {
 	if err != nil {
 		log.Println("error receiving orders: ", err)
 		a.ErrChan <- err
-		return // Добавляем возврат, чтобы завершить работу функции при ошибке
+		return
 	}
 
 	for _, order := range orders {
 		select {
 		case <-ctx.Done():
-			return // Завершите отправку, если контекст отменен
+			return
 		default:
 			ch <- order
 		}
@@ -174,7 +174,6 @@ func (a *App) runWorkers(ctx context.Context, wg *sync.WaitGroup, ch chan model.
 			a.worker(ctx, ch, w)
 		}(w)
 	}
-
 }
 
 func (a *App) worker(ctx context.Context, ch chan model.Order, w int) {
@@ -225,8 +224,6 @@ func (a *App) getAccrualOrders(order *model.Order) error {
 func (a *App) initHTTPClient() *resty.Client {
 	cli := resty.New()
 	cli.SetBaseURL(a.Config.Accrual)
-	//cli.SetBaseURL(fmt.Sprintf("http://%v", a.Config.Accrual))
-
 	return cli
 }
 

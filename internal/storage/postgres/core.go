@@ -1,10 +1,12 @@
 package postgres
 
 import (
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage"
+	"log"
+
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/jmoiron/sqlx"
-	"log"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage"
 )
 
 type PgStorage struct {

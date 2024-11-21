@@ -2,8 +2,9 @@ package postgres
 
 import (
 	"context"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"log"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 )
 
 func (p *PgStorage) GetBalance(ctx context.Context, userID int) (*model.Balance, error) {
@@ -39,7 +40,6 @@ func (p *PgStorage) CreateBalance(ctx context.Context, current float64, userID i
 }
 
 func (p *PgStorage) UpdateBalance(ctx context.Context, current float64, userID int) error {
-
 	query := `UPDATE balance SET current = $1 WHERE user_id = $2;`
 
 	_, err := p.db.ExecContext(ctx, query, current, userID)

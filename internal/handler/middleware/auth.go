@@ -2,10 +2,12 @@ package middleware
 
 import (
 	"context"
+	"net/http"
+
+	"github.com/golang-jwt/jwt/v5"
+
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/handler"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
-	"github.com/golang-jwt/jwt/v5"
-	"net/http"
 )
 
 func JwtAuthMiddleware(next http.Handler) http.Handler {

@@ -2,10 +2,11 @@ package postgres
 
 import (
 	"context"
-	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 )
@@ -62,7 +63,6 @@ func (p *PgStorage) Login(ctx context.Context, params *model.AuthParams) (*model
 	}
 
 	return &model.UserWithToken{Login: user.Login, ID: user.ID, Token: token.Token}, nil
-
 }
 
 func CheckPasswordHash(password, hash string) error {

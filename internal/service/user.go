@@ -4,10 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log"
+
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/exception"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage"
-	"log"
 )
 
 type Service interface {
@@ -20,12 +21,12 @@ type Service interface {
 	GetUserWithdrawals(ctx context.Context, login *model.UserLogin) ([]model.Withdrawal, error)
 }
 
-type UserMethods struct {
+type Methods struct {
 	Storage storage.Storage
 }
 
 // Register - need for register new user
-func (s *UserMethods) Register(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error) {
+func (s *Methods) Register(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, &model.UserLogin{Username: params.Login})
 	if user != nil || !errors.Is(err, sql.ErrNoRows) {
 		return nil, errors.New("can't register new user")
@@ -41,7 +42,7 @@ func (s *UserMethods) Register(ctx context.Context, params *model.AuthParams) (*
 }
 
 // Login - check permissions for user and return token
-func (s *UserMethods) Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error) {
+func (s *Methods) Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error) {
 	user, err := s.Storage.User().Login(ctx, params)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, errors.New("user doesn't exists")
@@ -54,7 +55,7 @@ func (s *UserMethods) Login(ctx context.Context, params *model.AuthParams) (*mod
 }
 
 // SetOrder - create new order for check accrual system
-func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*model.Order, error) {
+func (s *Methods) SetOrder(ctx context.Context, params *model.UserOrder) (*model.Order, error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, &params.UserLogin)
 	if err != nil {
 		log.Println("user with such login not found")
@@ -76,7 +77,6 @@ func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*m
 	if existsOrder.UserID != params.UserID {
 		log.Println("the order already set for another user")
 		return nil, exception.ErrOrderAlreadyExistsAnotherUser
-
 	}
 
 	if existsOrder.UserID == params.UserID {
@@ -84,11 +84,10 @@ func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*m
 		return nil, exception.ErrOrderAlreadyExists
 	}
 	return nil, err
-
 }
 
 // GetUserOrders - get orders of user with statuses
-func (s *UserMethods) GetUserOrders(ctx context.Context, login *model.UserLogin) (orders []model.Order, err error) {
+func (s *Methods) GetUserOrders(ctx context.Context, login *model.UserLogin) (orders []model.Order, err error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, login)
 	if err != nil {
 		log.Println("error when try to select user by login")
@@ -104,7 +103,7 @@ func (s *UserMethods) GetUserOrders(ctx context.Context, login *model.UserLogin)
 }
 
 // GetUserBalance - get balance of user with current and withdrawn
-func (s *UserMethods) GetUserBalance(ctx context.Context, login *model.UserLogin) (*model.Balance, error) {
+func (s *Methods) GetUserBalance(ctx context.Context, login *model.UserLogin) (*model.Balance, error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, login)
 	if err != nil {
 		log.Println("error when try to select user by login")
@@ -121,7 +120,7 @@ func (s *UserMethods) GetUserBalance(ctx context.Context, login *model.UserLogin
 }
 
 // DeductPoints - purchase an order for points
-func (s *UserMethods) DeductPoints(ctx context.Context, withdraw *model.Withdraw, login *model.UserLogin) (*model.Withdraw, error) {
+func (s *Methods) DeductPoints(ctx context.Context, withdraw *model.Withdraw, login *model.UserLogin) (*model.Withdraw, error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, login)
 	if err != nil {
 		log.Println("error when try to select user by login")
@@ -154,7 +153,7 @@ func (s *UserMethods) DeductPoints(ctx context.Context, withdraw *model.Withdraw
 }
 
 // GetUserWithdrawals - get history withdrawals of user
-func (s *UserMethods) GetUserWithdrawals(ctx context.Context, login *model.UserLogin) (values []model.Withdrawal, err error) {
+func (s *Methods) GetUserWithdrawals(ctx context.Context, login *model.UserLogin) (values []model.Withdrawal, err error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, login)
 	if err != nil {
 		return nil, err

@@ -2,14 +2,14 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"log"
 	"net/http"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 )
 
 func (h *Handler) Register() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		defer r.Body.Close()
 
 		var params model.AuthParams
