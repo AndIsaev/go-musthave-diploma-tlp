@@ -32,3 +32,11 @@ func (p *PgStorage) User() storage.UserRepository {
 func (p *PgStorage) Order() storage.OrderRepository {
 	return p
 }
+
+func (p *PgStorage) Balance() storage.BalanceRepository {
+	return p
+}
+
+func (p *PgStorage) Withdraw() storage.WithdrawRepository {
+	return p
+}

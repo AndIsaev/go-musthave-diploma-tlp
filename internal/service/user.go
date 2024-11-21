@@ -103,7 +103,7 @@ func (s *UserMethods) GetUserBalance(ctx context.Context, login *model.UserLogin
 		return nil, err
 	}
 
-	balance, err := s.Storage.User().GetBalance(ctx, user.ID)
+	balance, err := s.Storage.Balance().GetBalance(ctx, user.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (s *UserMethods) DeductPoints(ctx context.Context, withdraw *model.Withdraw
 		return nil, err
 	}
 
-	balance, err := s.Storage.User().GetBalance(ctx, user.ID)
+	balance, err := s.Storage.Balance().GetBalance(ctx, user.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -126,12 +126,12 @@ func (s *UserMethods) DeductPoints(ctx context.Context, withdraw *model.Withdraw
 	}
 
 	current := *balance.Current - *withdraw.Price
-	err = s.Storage.User().UpdateBalance(ctx, current, user.ID)
+	err = s.Storage.Balance().UpdateBalance(ctx, current, user.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	newWithdraw, err := s.Storage.User().CreateWithdraw(ctx, withdraw, user.ID)
+	newWithdraw, err := s.Storage.Withdraw().CreateWithdraw(ctx, withdraw, user.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +145,7 @@ func (s *UserMethods) GetUserWithdrawals(ctx context.Context, login *model.UserL
 		return nil, err
 	}
 
-	values, err = s.Storage.User().GetListWithdrawnBalance(ctx, user.ID)
+	values, err = s.Storage.Withdraw().GetListWithdrawnBalance(ctx, user.ID)
 	if err != nil {
 		log.Println("error when trying to get list withdrawn")
 		return

@@ -231,17 +231,17 @@ func (a *App) initHTTPClient() *resty.Client {
 }
 
 func (a *App) updateCurrentBalance(ctx context.Context, order model.Order) error {
-	_, err := a.DBConn.User().GetBalance(ctx, order.UserID)
+	_, err := a.DBConn.Balance().GetBalance(ctx, order.UserID)
 	if errors.Is(err, sql.ErrNoRows) {
 		log.Println("try creating new instance of balance")
-		_, err := a.DBConn.User().CreateBalance(ctx, *order.Accrual, order.UserID)
+		_, err := a.DBConn.Balance().CreateBalance(ctx, *order.Accrual, order.UserID)
 		if err != nil {
 			log.Println("error when creating a balance")
 			return err
 		}
 		return nil
 	}
-	err = a.DBConn.User().UpdateBalance(ctx, *order.Accrual, order.UserID)
+	err = a.DBConn.Balance().UpdateBalance(ctx, *order.Accrual, order.UserID)
 	if err != nil {
 		log.Println("can't update balance")
 		return err
