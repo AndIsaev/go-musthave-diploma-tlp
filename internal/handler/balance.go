@@ -3,7 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/exception"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"log"
@@ -106,9 +105,7 @@ func (h *Handler) GetWithdrawals() http.HandlerFunc {
 		}
 
 		withdrawals, err := h.UserService.GetUserWithdrawals(r.Context(), &login)
-		fmt.Println("hhhhhhhhhhhhhhhhh")
-		fmt.Println(withdrawals)
-		fmt.Println("hhhhhhhhhhhhhhhhh")
+
 		if err != nil {
 			response, _ := json.Marshal(Response{Message: "internal server error"})
 			w.WriteHeader(http.StatusInternalServerError)

@@ -16,29 +16,31 @@ func (p *PgStorage) GetUserByLogin(ctx context.Context, userLogin *model.UserLog
 
 	err := p.db.GetContext(ctx, user, query, userLogin.Username)
 	if err != nil {
+		log.Printf("error when try select info of user %v\n", userLogin.Username)
 		return nil, err
 	}
 	return user, nil
 }
 
 func (p *PgStorage) CreateUser(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error) {
-	var val model.User
+	user := &model.User{}
 	query := `INSERT INTO users (login, password) VALUES ($1, $2) RETURNING id, login;`
 
 	hashedPassword, _ := HashPassword(params.Password)
 
-	err := p.db.QueryRowContext(ctx, query, params.Login, hashedPassword).Scan(&val.ID, &val.Login)
+	err := p.db.QueryRowContext(ctx, query, params.Login, hashedPassword).Scan(&user.ID, &user.Login)
 	if err != nil {
 		log.Println("can't insert data of user")
 		return nil, err
 	}
 
-	token, err := GenerateJWT(&val)
+	token, err := GenerateJWT(user)
 	if err != nil {
+		log.Println("error when try to generate token")
 		return nil, err
 	}
 
-	return &model.UserWithToken{Login: val.Login, ID: val.ID, Token: token.Token}, nil
+	return &model.UserWithToken{Login: user.Login, ID: user.ID, Token: token.Token}, nil
 }
 
 func (p *PgStorage) Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error) {

@@ -2,13 +2,12 @@ package postgres
 
 import (
 	"context"
-	"fmt"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"log"
 )
 
 func (p *PgStorage) GetBalance(ctx context.Context, userID int) (*model.Balance, error) {
-	var val model.Balance
+	balance := &model.Balance{}
 	query := `SELECT
     			b.current,
     			SUM(w.price) as withdrawn
@@ -17,30 +16,26 @@ func (p *PgStorage) GetBalance(ctx context.Context, userID int) (*model.Balance,
 			  WHERE b.user_id = $1
 			  GROUP BY b.current
 			  `
-	err := p.db.GetContext(ctx, &val, query, userID)
+	err := p.db.GetContext(ctx, balance, query, userID)
 	if err != nil {
-		fmt.Println("00000000000")
-		fmt.Println(err)
-
-		fmt.Println("00000000000")
-
+		log.Printf("error when try select balance of user %v\n", userID)
 		return nil, err
 	}
-	return &val, nil
+	return balance, nil
 }
 
 func (p *PgStorage) CreateBalance(ctx context.Context, current float64, userID int) (*model.Balance, error) {
-	var val model.Balance
-	fmt.Println(current)
+	balance := &model.Balance{}
+
 	query := `INSERT INTO balance (current, user_id) VALUES ($1, $2) RETURNING current;`
 
-	err := p.db.QueryRowContext(ctx, query, current, userID).Scan(&val.Current)
+	err := p.db.QueryRowContext(ctx, query, current, userID).Scan(&balance.Current)
 	if err != nil {
 		log.Println("can't insert data of balance")
 		return nil, err
 	}
 
-	return &val, nil
+	return balance, nil
 }
 
 func (p *PgStorage) UpdateBalance(ctx context.Context, current float64, userID int) error {
@@ -57,14 +52,15 @@ func (p *PgStorage) UpdateBalance(ctx context.Context, current float64, userID i
 }
 
 func (p *PgStorage) GetWithdrawnBalance(ctx context.Context, userID int) (*model.Balance, error) {
-	var val model.Balance
+	balance := &model.Balance{}
 	query := `select b.current as current, sum(w.price) as withdrawn FROM balance b
 				inner join withdraw as w on w.user_id  = b.user_id 
 				where b.user_id = $1
 				group by b.current;`
-	err := p.db.GetContext(ctx, &val, query, userID)
+	err := p.db.GetContext(ctx, balance, query, userID)
 	if err != nil {
+		log.Printf("error when try select balance with withdraw of user %v\n", userID)
 		return nil, err
 	}
-	return &val, nil
+	return balance, nil
 }
