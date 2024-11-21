@@ -225,6 +225,8 @@ func (a *App) getAccrualOrders(order *model.Order) error {
 func (a *App) initHTTPClient() *resty.Client {
 	cli := resty.New()
 	cli.SetBaseURL(a.Config.Accrual)
+	//cli.SetBaseURL(fmt.Sprintf("http://%v", a.Config.Accrual))
+
 	return cli
 }
 

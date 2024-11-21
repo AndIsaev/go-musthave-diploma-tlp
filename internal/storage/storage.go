@@ -25,8 +25,11 @@ type UserRepository interface {
 	GetOrderByNumber(ctx context.Context, params *model.UserOrder) (*model.Order, error)
 	ListOrders(ctx context.Context) ([]model.Order, error)
 	UpdateOrder(ctx context.Context, order *model.Order) error
-	ListOrdersById(ctx context.Context, userID int) (orders []model.Order, err error)
+	ListOrdersByUserID(ctx context.Context, userID int) (orders []model.Order, err error)
 	GetBalance(ctx context.Context, userID int) (balance *model.Balance, err error)
 	CreateBalance(ctx context.Context, current float64, userID int) (*model.Balance, error)
 	UpdateBalance(ctx context.Context, current float64, userID int) error
+	CreateWithdraw(ctx context.Context, withdraw *model.Withdraw, userID int) (*model.Withdraw, error)
+	//GetWithdrawnBalance(ctx context.Context, userID int) (*model.Balance, error)
+	GetListWithdrawnBalance(ctx context.Context, userID int) (values []model.BalanceWithTime, err error)
 }

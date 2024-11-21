@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"log"
 )
@@ -33,9 +34,10 @@ func (p *PgStorage) GetOrderByNumber(ctx context.Context, params *model.UserOrde
 	return &val, nil
 }
 
-func (p *PgStorage) ListOrdersById(ctx context.Context, userID int) (orders []model.Order, err error) {
+func (p *PgStorage) ListOrdersByUserID(ctx context.Context, userID int) (orders []model.Order, err error) {
 	query := `SELECT number, status, accrual, uploaded_at FROM orders WHERE user_id = $1 ORDER BY uploaded_at DESC`
 	err = p.db.SelectContext(ctx, &orders, query, userID)
+	fmt.Println(err)
 	if err != nil {
 		return nil, err
 	}
@@ -58,6 +60,7 @@ func (p *PgStorage) UpdateOrder(ctx context.Context, order *model.Order) error {
 	err := p.db.QueryRowContext(ctx, query, order.Accrual, order.Status, order.ID).
 		Scan(&order.ID, &order.Number, &order.UserID, &order.Status)
 	if err != nil {
+		fmt.Println(err)
 		log.Printf("can't update order")
 		return err
 	}

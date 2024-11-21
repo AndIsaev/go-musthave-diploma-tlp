@@ -45,7 +45,14 @@ func (p *PgStorage) RunMigrations(ctx context.Context) error {
 				    current float default 0 not null check (current > 0),
 					foreign key (user_id) references users (id)
 				    );
-
+				create table if not exists withdraw (
+					id serial primary key,
+					number varchar(255),
+				    user_id integer not null,
+				    price float default 0 not null check (price > 0),
+				    processed_at timestamp with time zone,
+				    foreign key (user_id) references users (id)
+				    );
 `)
 
 	if err != nil {

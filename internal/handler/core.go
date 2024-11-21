@@ -5,6 +5,7 @@ import (
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/service"
 	"github.com/go-playground/validator/v10"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -37,4 +38,30 @@ func (h *Handler) writeJSONResponseError(w http.ResponseWriter, err error, statu
 	response, _ := json.Marshal(Response{Message: err.Error()})
 	w.WriteHeader(statusCode)
 	w.Write(response)
+}
+
+func isLuhnValid(orderNumber int) bool {
+	orderStr := strconv.Itoa(orderNumber)
+
+	var sum int
+	double := false
+
+	for i := len(orderStr) - 1; i >= 0; i-- {
+		digit, err := strconv.Atoi(string(orderStr[i]))
+		if err != nil {
+			return false
+		}
+
+		if double {
+			digit *= 2
+			if digit > 9 {
+				digit -= 9
+			}
+		}
+
+		sum += digit
+		double = !double
+	}
+
+	return sum%10 == 0
 }

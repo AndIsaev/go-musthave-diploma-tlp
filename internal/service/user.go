@@ -15,7 +15,9 @@ type Service interface {
 	Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error)
 	SetOrder(ctx context.Context, params *model.UserOrder) (*model.Order, error)
 	GetUserOrders(ctx context.Context, login *model.UserLogin) (orders []model.Order, err error)
-	//SetNewBalance(ctx context.Context, login *model.UserLogin, balance *model.Balance) (*model.Balance, error)
+	DeductPoints(ctx context.Context, withdraw *model.Withdraw, login *model.UserLogin) (*model.Withdraw, error)
+	GetUserBalance(ctx context.Context, login *model.UserLogin) (*model.Balance, error)
+	GetUserWithdrawals(ctx context.Context, login *model.UserLogin) ([]model.BalanceWithTime, error)
 }
 
 type UserMethods struct {
@@ -87,7 +89,7 @@ func (s *UserMethods) GetUserOrders(ctx context.Context, login *model.UserLogin)
 		return nil, err
 	}
 
-	orders, err = s.Storage.User().ListOrdersById(ctx, user.ID)
+	orders, err = s.Storage.User().ListOrdersByUserID(ctx, user.ID)
 	if err != nil {
 		log.Println("error when trying to receive user orders")
 		return
@@ -107,4 +109,46 @@ func (s *UserMethods) GetUserBalance(ctx context.Context, login *model.UserLogin
 	}
 
 	return balance, nil
+}
+
+func (s *UserMethods) DeductPoints(ctx context.Context, withdraw *model.Withdraw, login *model.UserLogin) (*model.Withdraw, error) {
+	user, err := s.Storage.User().GetUserByLogin(ctx, login)
+	if err != nil {
+		return nil, err
+	}
+
+	balance, err := s.Storage.User().GetBalance(ctx, user.ID)
+	if err != nil {
+		return nil, err
+	}
+	if *balance.Current < *withdraw.Price {
+		return nil, exception.ErrNotEnoughBonuses
+	}
+
+	current := *balance.Current - *withdraw.Price
+	err = s.Storage.User().UpdateBalance(ctx, current, user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	newWithdraw, err := s.Storage.User().CreateWithdraw(ctx, withdraw, user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return newWithdraw, nil
+}
+
+func (s *UserMethods) GetUserWithdrawals(ctx context.Context, login *model.UserLogin) (values []model.BalanceWithTime, err error) {
+	user, err := s.Storage.User().GetUserByLogin(ctx, login)
+	if err != nil {
+		return nil, err
+	}
+
+	values, err = s.Storage.User().GetListWithdrawnBalance(ctx, user.ID)
+	if err != nil {
+		log.Println("error when trying to get list withdrawn")
+		return
+	}
+	return
 }

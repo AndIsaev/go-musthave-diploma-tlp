@@ -28,6 +28,9 @@ func (a *App) initRouter() {
 			r.Use(mid.JwtAuthMiddleware)
 			r.Post("/orders", a.Handler.SetOrder())
 			r.Get("/orders", a.Handler.ListUserOrders())
+			r.Get("/balance", a.Handler.CheckBalance())
+			r.Get("/withdrawals", a.Handler.GetWithdrawals())
+			r.Post("/balance/withdraw", a.Handler.Withdraw())
 		})
 
 	})

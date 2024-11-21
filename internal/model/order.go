@@ -5,10 +5,9 @@ import "time"
 type Status string
 
 const (
-	NEW        Status = "NEW"
-	PROCESSING Status = "PROCESSING"
-	INVALID    Status = "INVALID"
-	PROCESSED  Status = "PROCESSED"
+	NEW       Status = "NEW"
+	INVALID   Status = "INVALID"
+	PROCESSED Status = "PROCESSED"
 )
 
 type Order struct {
