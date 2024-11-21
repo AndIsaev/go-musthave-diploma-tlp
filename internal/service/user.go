@@ -24,6 +24,7 @@ type UserMethods struct {
 	Storage storage.Storage
 }
 
+// Register - need for register new user
 func (s *UserMethods) Register(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, &model.UserLogin{Username: params.Login})
 	if user != nil || !errors.Is(err, sql.ErrNoRows) {
@@ -39,6 +40,7 @@ func (s *UserMethods) Register(ctx context.Context, params *model.AuthParams) (*
 	return createdUser, nil
 }
 
+// Login - check permissions for user and return token
 func (s *UserMethods) Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error) {
 	user, err := s.Storage.User().Login(ctx, params)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -51,6 +53,7 @@ func (s *UserMethods) Login(ctx context.Context, params *model.AuthParams) (*mod
 	return user, nil
 }
 
+// SetOrder - create new order for check accrual system
 func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*model.Order, error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, &params.UserLogin)
 	if err != nil {
@@ -64,6 +67,7 @@ func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*m
 		params.Status = model.NEW
 		newOrder, err := s.Storage.Order().SetUserOrder(ctx, params)
 		if err != nil {
+			log.Println("error when try to set new order of user")
 			return nil, err
 		}
 		return newOrder, nil
@@ -83,9 +87,11 @@ func (s *UserMethods) SetOrder(ctx context.Context, params *model.UserOrder) (*m
 
 }
 
+// GetUserOrders - get orders of user with statuses
 func (s *UserMethods) GetUserOrders(ctx context.Context, login *model.UserLogin) (orders []model.Order, err error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, login)
 	if err != nil {
+		log.Println("error when try to select user by login")
 		return nil, err
 	}
 
@@ -97,28 +103,34 @@ func (s *UserMethods) GetUserOrders(ctx context.Context, login *model.UserLogin)
 	return
 }
 
+// GetUserBalance - get balance of user with current and withdrawn
 func (s *UserMethods) GetUserBalance(ctx context.Context, login *model.UserLogin) (*model.Balance, error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, login)
 	if err != nil {
+		log.Println("error when try to select user by login")
 		return nil, err
 	}
 
 	balance, err := s.Storage.Balance().GetBalance(ctx, user.ID)
 	if err != nil {
+		log.Println("error when try to select balance")
 		return nil, err
 	}
 
 	return balance, nil
 }
 
+// DeductPoints - purchase an order for points
 func (s *UserMethods) DeductPoints(ctx context.Context, withdraw *model.Withdraw, login *model.UserLogin) (*model.Withdraw, error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, login)
 	if err != nil {
+		log.Println("error when try to select user by login")
 		return nil, err
 	}
 
 	balance, err := s.Storage.Balance().GetBalance(ctx, user.ID)
 	if err != nil {
+		log.Println("error when try to select balance")
 		return nil, err
 	}
 	if *balance.Current < *withdraw.Price {
@@ -128,17 +140,20 @@ func (s *UserMethods) DeductPoints(ctx context.Context, withdraw *model.Withdraw
 	current := *balance.Current - *withdraw.Price
 	err = s.Storage.Balance().UpdateBalance(ctx, current, user.ID)
 	if err != nil {
+		log.Println("error when try to create balance")
 		return nil, err
 	}
 
 	newWithdraw, err := s.Storage.Withdraw().CreateWithdraw(ctx, withdraw, user.ID)
 	if err != nil {
+		log.Println("error when try to create withdraw")
 		return nil, err
 	}
 
 	return newWithdraw, nil
 }
 
+// GetUserWithdrawals - get history withdrawals of user
 func (s *UserMethods) GetUserWithdrawals(ctx context.Context, login *model.UserLogin) (values []model.Withdrawal, err error) {
 	user, err := s.Storage.User().GetUserByLogin(ctx, login)
 	if err != nil {
