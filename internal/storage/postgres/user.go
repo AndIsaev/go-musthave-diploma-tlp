@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"log"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -83,7 +84,7 @@ func GenerateJWT(user *model.User) (*model.UserToken, error) {
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	var jwtKey = []byte("my_secret_key") // TODO: забирать значение из переменной среды
+	var jwtKey = []byte(os.Getenv("SECRET_KEY"))
 
 	tokenString, err := token.SignedString(jwtKey)
 	if err != nil {

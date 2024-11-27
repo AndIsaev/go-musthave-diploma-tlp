@@ -3,6 +3,7 @@ package middleware
 import (
 	"context"
 	"net/http"
+	"os"
 
 	"github.com/golang-jwt/jwt/v5"
 
@@ -20,7 +21,7 @@ func JwtAuthMiddleware(next http.Handler) http.Handler {
 		}
 		_, err := jwt.ParseWithClaims(tokenString, claims,
 			func(t *jwt.Token) (interface{}, error) {
-				return []byte("my_secret_key"), nil
+				return []byte(os.Getenv("SECRET_KEY")), nil
 			})
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
