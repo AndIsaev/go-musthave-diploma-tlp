@@ -14,6 +14,7 @@ type Storage interface {
 	Withdraw() WithdrawRepository
 }
 
+//go:generate mockgen -destination=mocks/mock_system.go -package=mocks github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage SystemRepository
 type SystemRepository interface {
 	Close(ctx context.Context) error
 	Ping(ctx context.Context) error
