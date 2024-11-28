@@ -11,6 +11,7 @@ import (
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage"
 )
 
+//go:generate mockgen -destination=mocks/mock_service.go -package=mocks github.com/AndIsaev/go-musthave-diploma-tlp/internal/service Service
 type Service interface {
 	Register(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error)
 	Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error)
