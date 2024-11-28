@@ -2,9 +2,11 @@ package tests
 
 import (
 	"context"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage/mocks"
-	"github.com/golang/mock/gomock"
 	"testing"
+
+	"github.com/golang/mock/gomock"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage/mocks"
 )
 
 func TestSystemRepository_Ping(t *testing.T) {

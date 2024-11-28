@@ -3,11 +3,13 @@ package service
 import (
 	"context"
 	"database/sql"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage/mocks"
-	"github.com/golang/mock/gomock"
 	"reflect"
 	"testing"
+
+	"github.com/golang/mock/gomock"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage/mocks"
 )
 
 func TestMethodsRegister(t *testing.T) {
