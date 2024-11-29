@@ -2,9 +2,10 @@ package tests
 
 import (
 	"database/sql"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/exception"
 	"reflect"
 	"testing"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/exception"
 
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/service"
@@ -15,7 +16,6 @@ func TestSetOrderMethod(t *testing.T) {
 	existsUser := &model.User{ID: 1, Login: login.Username}
 	userOrder := &model.UserOrder{ID: 1, UserID: existsUser.ID, UserLogin: login, Number: "9278923470"}
 	newOrder := &model.Order{ID: &userOrder.ID, Number: userOrder.Number}
-	//anotherUser := &model.User{ID: 2, Login: "another"}
 
 	tests := []struct {
 		name        string
