@@ -35,6 +35,21 @@ func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder {
 	return m.recorder
 }
 
+// Auth mocks base method.
+func (m *MockUserRepository) Auth(arg0 context.Context, arg1 *model.AuthParams) (*model.UserWithToken, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Auth", arg0, arg1)
+	ret0, _ := ret[0].(*model.UserWithToken)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Auth indicates an expected call of Auth.
+func (mr *MockUserRepositoryMockRecorder) Auth(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Auth", reflect.TypeOf((*MockUserRepository)(nil).Auth), arg0, arg1)
+}
+
 // CreateUser mocks base method.
 func (m *MockUserRepository) CreateUser(arg0 context.Context, arg1 *model.AuthParams) (*model.UserWithToken, error) {
 	m.ctrl.T.Helper()
@@ -63,19 +78,4 @@ func (m *MockUserRepository) GetUserByLogin(arg0 context.Context, arg1 *model.Us
 func (mr *MockUserRepositoryMockRecorder) GetUserByLogin(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByLogin", reflect.TypeOf((*MockUserRepository)(nil).GetUserByLogin), arg0, arg1)
-}
-
-// Login mocks base method.
-func (m *MockUserRepository) Login(arg0 context.Context, arg1 *model.AuthParams) (*model.UserWithToken, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Login", arg0, arg1)
-	ret0, _ := ret[0].(*model.UserWithToken)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Login indicates an expected call of Login.
-func (mr *MockUserRepositoryMockRecorder) Login(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockUserRepository)(nil).Login), arg0, arg1)
 }

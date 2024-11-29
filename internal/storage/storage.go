@@ -26,7 +26,7 @@ type SystemRepository interface {
 type UserRepository interface {
 	GetUserByLogin(context.Context, *model.UserLogin) (*model.User, error)
 	CreateUser(ctx context.Context, user *model.AuthParams) (*model.UserWithToken, error)
-	Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error)
+	Auth(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error)
 }
 
 //go:generate mockgen -destination=mocks/mock_order_repository.go -package=mocks github.com/AndIsaev/go-musthave-diploma-tlp/internal/storage OrderRepository

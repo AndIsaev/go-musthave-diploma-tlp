@@ -45,7 +45,7 @@ func (p *PgStorage) CreateUser(ctx context.Context, params *model.AuthParams) (*
 	return &model.UserWithToken{Login: user.Login, ID: user.ID, Token: token.Token}, nil
 }
 
-func (p *PgStorage) Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error) {
+func (p *PgStorage) Auth(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error) {
 	user, err := p.GetUserByLogin(ctx, &model.UserLogin{Username: params.Login})
 	if err != nil {
 		log.Printf("error get user by login: %v\n", err.Error())

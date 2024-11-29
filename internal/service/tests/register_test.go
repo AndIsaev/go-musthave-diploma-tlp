@@ -10,7 +10,7 @@ import (
 	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
 )
 
-func TestMethodsRegister(t *testing.T) {
+func TestRegisterMethod(t *testing.T) {
 	tests := []struct {
 		name    string
 		setup   func(ts *testSuite)
@@ -46,17 +46,6 @@ func TestMethodsRegister(t *testing.T) {
 		},
 		{
 			name: "unsuccessful registration, if connection closed  not defined",
-			setup: func(ts *testSuite) {
-				ts.mockUserRepo.EXPECT().
-					GetUserByLogin(ts.ctx, &model.UserLogin{Username: "existing_user"}).
-					Return(nil, sql.ErrConnDone)
-			},
-			args:    &model.AuthParams{Login: "existing_user", Password: "password"},
-			want:    nil,
-			wantErr: true,
-		},
-		{
-			name: "unsuccessful registration, if connection closed not defined",
 			setup: func(ts *testSuite) {
 				ts.mockUserRepo.EXPECT().
 					GetUserByLogin(ts.ctx, &model.UserLogin{Username: "existing_user"}).

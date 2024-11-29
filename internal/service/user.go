@@ -44,7 +44,7 @@ func (s *Methods) Register(ctx context.Context, params *model.AuthParams) (*mode
 
 // Login - check permissions for user and return token
 func (s *Methods) Login(ctx context.Context, params *model.AuthParams) (*model.UserWithToken, error) {
-	user, err := s.Storage.User().Login(ctx, params)
+	user, err := s.Storage.User().Auth(ctx, params)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, errors.New("user doesn't exists")
 	} else if err != nil {
