@@ -208,17 +208,17 @@ func (a *App) worker(ctx context.Context, ch chan model.Order, w int) {
 }
 
 func (a *App) getAccrualOrders(order *model.Order) error {
-	_, err := a.Client.R().
+	response, err := a.Client.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(&order).
 		SetResult(&order).
 		Get(fmt.Sprintf("/api/orders/%v", order.Number))
 
-	if err != nil {
-		return errors.Unwrap(err)
+	if response.StatusCode() == http.StatusTooManyRequests {
+		return nil
 	}
 
-	return nil
+	return errors.Unwrap(err)
 }
 
 func (a *App) initHTTPClient() *resty.Client {
