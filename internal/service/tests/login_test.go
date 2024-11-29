@@ -3,10 +3,11 @@ package tests
 import (
 	"database/sql"
 	"errors"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
-	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/service"
 	"reflect"
 	"testing"
+
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/model"
+	"github.com/AndIsaev/go-musthave-diploma-tlp/internal/service"
 )
 
 func TestLoginMethod(t *testing.T) {
