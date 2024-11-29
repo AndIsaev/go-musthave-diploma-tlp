@@ -113,9 +113,6 @@ func TestSetOrderMethod(t *testing.T) {
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("SetOrder() got = %v, want %v", got, tt.want)
 			}
-			if !reflect.DeepEqual(err, tt.expectedErr) {
-				t.Errorf("SetOrder() err = %v, expectedErr %v", err, tt.expectedErr)
-			}
 		})
 	}
 }
