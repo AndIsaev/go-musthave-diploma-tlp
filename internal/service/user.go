@@ -73,17 +73,16 @@ func (s *Methods) SetOrder(ctx context.Context, params *model.UserOrder) (*model
 			return nil, err
 		}
 		return newOrder, nil
-	}
+	} else if existsOrder != nil && existsOrder.UserID != params.UserID {
+		log.Println(existsOrder.UserID, params.UserID)
 
-	if existsOrder.UserID != params.UserID {
 		log.Println("the order already set for another user")
 		return nil, exception.ErrOrderAlreadyExistsAnotherUser
-	}
-
-	if existsOrder.UserID == params.UserID {
+	} else if existsOrder != nil && existsOrder.UserID == params.UserID {
 		log.Println("the order already set for this user")
 		return nil, exception.ErrOrderAlreadyExists
 	}
+
 	return nil, err
 }
 
