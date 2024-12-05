@@ -215,6 +215,7 @@ func (a *App) getAccrualOrders(order *model.Order) error {
 		Get(fmt.Sprintf("/api/orders/%v", order.Number))
 
 	if response.StatusCode() == http.StatusTooManyRequests {
+		time.Sleep(60 * time.Second)
 		return nil
 	}
 
